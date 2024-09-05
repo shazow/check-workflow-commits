@@ -1,0 +1,7 @@
+name: Example malicious workflow
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@dcfea3dc42cb8b74ad61909e2128df36f7e9fd88  # Actually lives on https://github.com/shazow/setup-python/
