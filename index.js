@@ -43,6 +43,9 @@ async function run() {
       const workflow = yaml.load(workflowYaml);
 
       for (const job of Object.values(workflow.jobs ?? {})) {
+        if (job.uses) {
+            await checkActionCommit(job.uses);
+        }
         for (const step of job.steps ?? []) {
           if (step.uses) {
             await checkActionCommit(step.uses);
