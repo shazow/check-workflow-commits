@@ -8,28 +8,30 @@ const badString = 'js-spoofed-commit-warning-trigger';
 const goodString = 'branches-list';
 
 async function checkActionCommit(action) {
-  const [repo, commit] = action.split('@');
-  if (commit) {
-    // Basic check if the commit looks like a hex string
-    if (commit.length >= 6 && /^[0-9a-f]+$/.test(commit)) {
-      const url = `https://github.com/${repo}/branch_commits/${commit}`;
-      info(`Checking: ${repo}@${commit} ...`);
+  const [repo, pin] = action.split('@');
+  if (!pin) return;
 
-      try {
-        const response = await fetch(url);
-        const text = await response.text();
+  // Basic check if the commit looks like a hex string
+  if (pin.length < 6 || !/^[0-9a-f]+$/.test(pin)) {
+    return;
+  }
 
-        if (text.includes(badString)) {
-          setFailed(`Found commit that does not exist on claimed repo: ${commit}\nAction: ${action}`);
-        } else if (text.includes(goodString)) {
-          info('✅');
-        } else {
-          setFailed(`Commit did not load or got an unexpected result: ${commit}\nAction: ${action}`);
-        }
-      } catch (error) {
-        setFailed(`Failed to fetch ${url}: ${error}`);
-      }
+  const url = `https://github.com/${repo}/branch_commits/${pin}`;
+  info(`Checking: ${repo}@${pin} ...`);
+
+  try {
+    const response = await fetch(url);
+    const text = await response.text();
+
+    if (text.includes(badString)) {
+      setFailed(`Found commit that does not exist on claimed repo: ${pin}\nAction: ${action}`);
+    } else if (text.includes(goodString)) {
+      info('✅');
+    } else {
+      setFailed(`Commit did not load or got an unexpected result: ${pin}\nAction: ${action}`);
     }
+  } catch (error) {
+    setFailed(`Failed to fetch ${url}: ${error}`);
   }
 }
 
