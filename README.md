@@ -15,6 +15,7 @@ $ $? && echo "Everything is okay" || "Things are bad"
 ## TODO
 
 - [ ] Make this into an action that can be included in a workflow as a lint.
+- [ ] Rewrite in a proper language that does YAML parsing instead of regexp.
 
 ## License
 
