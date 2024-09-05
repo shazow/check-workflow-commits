@@ -11,31 +11,29 @@
 
 readonly bad_string="js-spoofed-commit-warning-trigger"
 readonly good_string="branches-list"
+readonly regex="[\'\"]?uses[\'\"]?:\s*[\'\"]?([^/]+/[^/]+@[0-9a-f]{6,})[\'\"]?"
 
 while read -r line; do
-    uses_line="$(echo "$line" | grep -oP "uses:\s*[-_\w]*/[-_\w]*@[0-9a-f]*")"
-    if [[ -z "$uses_line" ]]; then
-        continue
-    fi
-
-    repo="$(echo "$uses_line" | cut -b6- | cut -d'@' -f1 | xargs)"
-    commit="$(echo "$uses_line" | cut -d'@' -f2)"
+  if [[ $line =~ $regex ]]; then
+    action="${BASH_REMATCH[1]}"
+    repo="$(echo "$action" | cut -d'@' -f1)"
+    commit="$(echo "$action" | cut -d'@' -f2)"
     url="https://github.com/$repo/branch_commits/$commit"
     echo -n "Checking: $repo@$commit ... "
 
-    # FIXME: This doesn't actually work, need to find another way to check commits
     result="$(curl --silent "$url")";
     if echo "$result" | grep -q "$bad_string"; then
-        echo "❌"
-        echo "Failed: Found commit that does not exist on claimed repo: $commit"
-        echo "  $line"
-        exit 1
+      echo "❌"
+      echo "Failed: Found commit that does not exist on claimed repo: $commit"
+      echo "  $line"
+      exit 1
     elif echo "$result" | grep -q "$good_string"; then
-        echo " ✅"
+      echo " ✅"
     else
-        echo "❓"
-        echo "Failed: Commit did not load or got an unexpected result: $commit"
-        echo "  $line"
-        exit 2
+      echo "❓"
+      echo "Failed: Commit did not load or got an unexpected result: $commit"
+      echo "  $line"
+      exit 2
     fi
+  fi
 done
