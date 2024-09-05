@@ -1,0 +1,11 @@
+{
+  "name": "check-workflow-commits",
+  "version": "1.0.0",
+  "description": "Find sneaky pinned commits in Github action workflow files that don't match the stated namespace.",
+  "main": "index.js",
+  "scripts": {
+  },
+  "keywords": ["github", "action"],
+  "author": "Andrey Petrov (@shazow)",
+  "license": "MIT"
+}
