@@ -13,6 +13,8 @@ readonly bad_string="js-spoofed-commit-warning-trigger"
 readonly good_string="branches-list"
 readonly regex="[\'\"]?uses[\'\"]?:\s*[\'\"]?([^/]+/[^/]+@[0-9a-f]{6,})[\'\"]?"
 
+code=0
+
 while read -r line; do
   if [[ $line =~ $regex ]]; then
     action="${BASH_REMATCH[1]}"
@@ -26,14 +28,16 @@ while read -r line; do
       echo "❌"
       echo "Failed: Found commit that does not exist on claimed repo: $commit"
       echo "  $line"
-      exit 1
+      code=1
     elif echo "$result" | grep -q "$good_string"; then
       echo " ✅"
     else
       echo "❓"
       echo "Failed: Commit did not load or got an unexpected result: $commit"
       echo "  $line"
-      exit 2
+      code=2
     fi
   fi
 done
+
+exit $code
