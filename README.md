@@ -27,11 +27,6 @@ jobs:
          cat .github/workflows/*.yml | bash <(curl -sSL "https://raw.githubusercontent.com/shazow/check-workflow-commits/main/check-workflow-commits")
 ```
 
-## TODO
-
-- [ ] Make this into an action that can be included in a workflow as a lint.
-- [ ] Rewrite in a proper language that does YAML parsing instead of regexp.
-
 ## License
 
 MIT
