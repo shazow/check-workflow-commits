@@ -1,0 +1,5 @@
+name: 'Check Workflow Commits'
+description: 'Assert that pinned commits match the claimed repository namespace'
+runs:
+  using: 'node20'
+  main: 'check-action.js'
